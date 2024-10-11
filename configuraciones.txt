@@ -1,0 +1,49 @@
+Configuración monitor config.txt >
+
+hdmi_force_edit_audio=1
+max_usb_current=1
+hdmi_force_hotplug=1
+config_hdmi_boost=7
+hdmi_group=2
+hdmi_mode=87
+hdmi_drive=2
+display_rotate=0
+hdmi_timings 1024 1 200 18 200 600 1 50 3 50 0 0 0 60 0 51200000 3
+
+
+Configuración pantalla en reposo >
+
+#!/bin/bash
+
+# Tiempo en segundos para apagar la pantalla (2 minutos)
+INACTIVITY_TIME=120
+
+# Comando para apagar la pantalla
+turn_off_screen() {
+  xset dpms force off
+}
+
+# Comando para encender la pantalla
+turn_on_screen() {
+  xset dpms force on
+}
+
+# Monitorea los eventos de la pantalla táctil
+monitor_touch_events() {
+  evtest /dev/input/event8 | while read line; do
+    # Si hay un evento de pulsación, enciende la pantalla
+    if [[ "$line" == *"SYN_REPORT"* ]]; then
+      turn_on_screen
+    fi
+  done
+}
+
+# Apagar la pantalla después de INACTIVITY_TIME segundos
+while true; do
+  # Apagar pantalla tras 2 minutos
+  sleep $INACTIVITY_TIME
+  turn_off_screen
+
+  # Monitorear eventos táctiles para encender la pantalla
+  monitor_touch_events
+done

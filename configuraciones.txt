@@ -65,3 +65,19 @@ Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
+
+
+Configuración teclado como servicio >
+
+[Unit]
+Description=Iniciar Onboard al arrancar
+After=graphical.target
+
+[Service]
+User=pi
+Environment=DISPLAY=:0
+ExecStart=/usr/bin/onboard
+Restart=on-failure
+
+[Install]
+WantedBy=graphical.target

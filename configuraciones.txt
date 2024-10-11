@@ -47,3 +47,21 @@ while true; do
   # Monitorear eventos táctiles para encender la pantalla
   monitor_touch_events
 done
+
+
+Configuración pantalla en reposo como servicio >
+
+[Unit]
+Description=Control de encendido/apagado de la pantalla táctil
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/home/pi/screen_power.sh
+User=pi
+Environment=DISPLAY=:0.0
+Environment=XAUTHORITY=/home/pi/.Xauthority
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

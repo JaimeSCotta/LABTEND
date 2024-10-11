@@ -49,6 +49,7 @@ while true; do
 done
 
 
+
 Configuración pantalla en reposo como servicio >
 
 [Unit]
@@ -67,6 +68,7 @@ Restart=on-failure
 WantedBy=multi-user.target
 
 
+
 Configuración teclado como servicio >
 
 [Unit]
@@ -78,6 +80,56 @@ User=pi
 Environment=DISPLAY=:0
 ExecStart=/usr/bin/onboard
 Restart=on-failure
+
+[Install]
+WantedBy=graphical.target
+
+
+
+Configuración full-screen como servicio >
+
+[Unit]
+Description=Iniciar Chromium en modo fullscreen al arrancar
+After=graphical.target
+
+[Service]
+User=pi
+Environment=DISPLAY=:0
+ExecStart=/usr/bin/chromium-browser --start-fullscreen "https://odoo.trimcomposites.com/web#cids=3&action=391&menu_id=284"
+Restart=on-failure
+
+[Install]
+WantedBy=graphical.target
+
+
+
+Configuración kiosk como servicio >
+
+[Unit]
+Description=Iniciar Chromium en modo kiosko sin fullscreen
+After=graphical.target
+
+[Service]
+User=pi
+Environment=DISPLAY=:0
+ExecStart=/usr/bin/chromium-browser --app="https://odoo.trimcomposites.com/web#cids=3&action=391&menu_id=284" --no-sandbox --disable-gpu --enable-features=WebUIDarkMode --disable-features=TranslateUI --window-size=1024,600 --window-position=0,0 --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-pinch --overscroll-history-navigation=0 --disable-software-rasterizer --disable-overlay-scrollbar --disable-gpu-compositing --disable-background-networking --inactivity-timeout=120
+Restart=on-failure
+
+[Install]
+WantedBy=graphical.target
+
+
+
+Configuración xset como servicio >
+
+[Unit]
+Description=Configurar DPMS para apagar la pantalla tras 120 segundos
+After=graphical.target
+
+[Service]
+ExecStart=/usr/bin/env DISPLAY=:0.0 XAUTHORITY=/home/pi/.Xauthority /usr/bin/xset dpms 120 240 360
+User=pi
+Type=oneshot
 
 [Install]
 WantedBy=graphical.target
